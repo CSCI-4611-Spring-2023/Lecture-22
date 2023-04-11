@@ -88,6 +88,21 @@ void main()
     {
         // Compute the ambient component: Ka * Ia
         illumination += kAmbient * ambientIntensities[i];
+
+        vec3 l;
+        if(lightTypes[i] == POINT_LIGHT)
+        {
+            l = normalize(lightPositions[i] - worldPosition);
+        }
+        else
+        {
+            l = normalize(lightPositions[i]);
+        }
+
+
+        float ndotl = max(dot(worldNormal, l), 0.0);
+
+        illumination += ndotl * kDiffuse * diffuseIntensities[i];
     }
 
     // Because the vertex color and texture coordinates are computed for each pixel,
