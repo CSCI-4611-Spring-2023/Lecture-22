@@ -23,8 +23,6 @@ export class PerPixelMaterial extends gfx.Material3
 
     public static shader = new gfx.ShaderProgram(phongVertexShader, phongFragmentShader);
 
-    /*
-
     private kAmbientUniform: WebGLUniformLocation | null;
     private kDiffuseUniform: WebGLUniformLocation | null;
     private kSpecularUniform: WebGLUniformLocation | null;
@@ -51,8 +49,6 @@ export class PerPixelMaterial extends gfx.Material3
     private colorAttribute: number;
     private texCoordAttribute: number;
 
-    */
-
     constructor()
     {
         super();
@@ -65,7 +61,6 @@ export class PerPixelMaterial extends gfx.Material3
 
         PerPixelMaterial.shader.initialize(this.gl);
 
-        /*
         this.kAmbientUniform = PerPixelMaterial.shader.getUniform(this.gl, 'kAmbient');
         this.kDiffuseUniform = PerPixelMaterial.shader.getUniform(this.gl, 'kDiffuse');
         this.kSpecularUniform = PerPixelMaterial.shader.getUniform(this.gl, 'kSpecular');
@@ -91,7 +86,6 @@ export class PerPixelMaterial extends gfx.Material3
         this.normalAttribute = PerPixelMaterial.shader.getAttribute(this.gl, 'normal');
         this.colorAttribute = PerPixelMaterial.shader.getAttribute(this.gl, 'color');
         this.texCoordAttribute = PerPixelMaterial.shader.getAttribute(this.gl, 'texCoord');   
-        */
     }
 
     draw(mesh: gfx.Mesh, transform: gfx.Transform3, camera: gfx.Camera, lightManager: gfx.LightManager): void
@@ -103,8 +97,6 @@ export class PerPixelMaterial extends gfx.Material3
 
         // Switch to this shader
         this.gl.useProgram(PerPixelMaterial.shader.getProgram());
-
-        /*
 
         // Set the camera uniforms
         const cameraPosition = new gfx.Vector3();
@@ -165,8 +157,6 @@ export class PerPixelMaterial extends gfx.Material3
             this.gl.uniform1i(this.useTextureUniform, 0);
             this.gl.disableVertexAttribArray(this.texCoordAttribute);
         }
-
-        */
 
         // Draw the triangles
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
