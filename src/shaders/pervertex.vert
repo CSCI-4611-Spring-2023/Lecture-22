@@ -89,20 +89,44 @@ void main()
         // Compute the ambient component: Ka * Ia
         illumination += kAmbient * ambientIntensities[i];
 
+        // Compute the L vector in the lighting equation. 
         vec3 l;
-        if(lightTypes[i] == POINT_LIGHT)
+        if(lightTypes[i] == DIRECTIONAL_LIGHT)
         {
-            l = normalize(lightPositions[i] - worldPosition);
+            // If it is a direction light, then the light position passed into the shader is the 
+            // direction to the light in world space. We just need to normalize it.
+            l = normalize(lightPositions[i]);
         }
         else
         {
-            l = normalize(lightPositions[i]);
+            // If it is a point light, then we need to compute the vector from the interpolated
+            // position to the light position in world space, then normalize it.
+            l = normalize(lightPositions[i] - worldPosition);
         }
 
-
+        // Compute the value of N dot L.  The max function clamps the value above zero.
+        // This is necessary because any lights with a dot product of zero will be behind
+        // the surface, and will therefore not contribute any light.  Note that this function
+        // expects a floating point value, and it causes an error if you don't use the decimal
+        // place because GLSL can't implicitly typecast the integer 0 to a float.
         float ndotl = max(dot(worldNormal, l), 0.0);
 
+        // Compute the diffuse component: Kd * Id * (N dot L)
         illumination += ndotl * kDiffuse * diffuseIntensities[i];
+
+        // Compute the vector from the vertex position to the eye position in world space.
+        // This is the vector E in the lighting equation.  Don't forget to normalize it!
+        vec3 e = normalize(eyePosition - worldPosition);
+
+        // Compute the light vector reflected about the normal.  We don't need to normalize
+        // it again because reflection does not change the length of the vector.
+        vec3 r = reflect(l, worldNormal);
+
+        // Compute the value of E dot R and clamp it above zero, as explained above.
+        float edotr = max(dot(e, -r), 0.0);
+
+        // Compute the specular component: Ks * Is * (E dot R)^s
+        illumination += pow(edotr, shininess) * kSpecular * specularIntensities[i];
     }
 
     // Because the vertex color and texture coordinates are computed for each pixel,
